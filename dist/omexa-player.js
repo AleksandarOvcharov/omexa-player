@@ -95,7 +95,14 @@
   left: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }
+
+.omexa-player-youtube:hover iframe {
+  pointer-events: auto;
+}
+
+
 
 .omexa-controls {
   position: absolute;
@@ -224,8 +231,51 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  z-index: 10;
+  opacity: 0;
+  animation: omexa-fade-in 0.3s ease-out forwards;
+}
+
+.omexa-loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top: 4px solid #ff6b6b;
+  border-radius: 50%;
+  animation: omexa-spin 0.8s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.3));
+}
+
+.omexa-loading-text {
   color: white;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.5px;
+}
+
+@keyframes omexa-spin {
+  0% { 
+    transform: rotate(0deg); 
+  }
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+
+@keyframes omexa-fade-in {
+  0% { 
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  100% { 
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .omexa-error {
@@ -760,9 +810,9 @@ class Controls {
     document.addEventListener('MSFullscreenChange', this.handleFullscreenChange.bind(this));
     
     // Mouse activity tracking for fullscreen
-            this.player.container.addEventListener('mousemove', this.handleMouseActivity.bind(this));
-        this.player.container.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
-        this.player.container.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
+    this.player.container.addEventListener('mousemove', this.handleMouseActivity.bind(this));
+    this.player.container.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
+    this.player.container.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
   }
   
   handleProgressMouseDown(e) {
@@ -995,17 +1045,19 @@ class Controls {
   }
   
   handleFullscreenChange() {
-    const isFullscreen = !!(
+    const fullscreenElement = 
       document.fullscreenElement ||
       document.webkitFullscreenElement ||
       document.mozFullScreenElement ||
-      document.msFullscreenElement
-    );
+      document.msFullscreenElement;
     
-    this.isFullscreen = isFullscreen;
+    // Check if THIS specific player's container is the one in fullscreen
+    const isThisPlayerFullscreen = fullscreenElement === this.player.container;
+    
+    this.isFullscreen = isThisPlayerFullscreen;
     this.updateFullscreenUI();
     
-    if (isFullscreen) {
+    if (isThisPlayerFullscreen) {
       this.player.container.classList.add('fullscreen');
     } else {
       this.player.container.classList.remove('fullscreen');
@@ -1033,6 +1085,9 @@ class Controls {
   }
   
   handleMouseEnter() {
+    // Reset hover state for all other players first
+    this.clearOtherPlayersHoverState();
+    
     this.isHovering = true;
     this.handleMouseActivity();
   }
@@ -1046,6 +1101,21 @@ class Controls {
       }, 1000);
     }
   }
+  
+  clearOtherPlayersHoverState() {
+    // Find all other Omexa players on the page and reset their hover state
+    const allPlayers = document.querySelectorAll('.omexa-player');
+    allPlayers.forEach(playerContainer => {
+      if (playerContainer !== this.player.container && playerContainer.omexaPlayer) {
+        const otherControls = playerContainer.omexaPlayer.controls;
+        if (otherControls && otherControls !== this) {
+          otherControls.isHovering = false;
+        }
+      }
+    });
+  }
+  
+
   
   updateTime() {
     const currentTime = this.player.getCurrentTime();
@@ -1120,6 +1190,7 @@ class Controls {
     document.removeEventListener('mozfullscreenchange', this.handleFullscreenChange.bind(this));
     document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange.bind(this));
     
+    // Clean up timers
     clearTimeout(this.inactivityTimer);
   }
 } 
@@ -1272,12 +1343,13 @@ class OmexaPlayer {
     if (!this.mediaElement) return;
     
     this.mediaElement.addEventListener('loadstart', () => {
-      this.hideLoading();
+      // Keep loading spinner visible during initial load
     });
     
     this.mediaElement.addEventListener('loadedmetadata', () => {
       this.duration = this.mediaElement.duration;
       this.isReady = true;
+      this.hideLoading();
       this.startTimeUpdates();
     });
     
@@ -1312,6 +1384,18 @@ class OmexaPlayer {
         this.controls.updatePlayButton();
       }
     });
+    
+    this.mediaElement.addEventListener('waiting', () => {
+      this.showBuffering();
+    });
+    
+    this.mediaElement.addEventListener('canplay', () => {
+      this.hideBuffering();
+    });
+    
+    this.mediaElement.addEventListener('playing', () => {
+      this.hideBuffering();
+    });
   }
   
   bindYouTubeEvents() {
@@ -1339,6 +1423,14 @@ class OmexaPlayer {
       if (this.controls) {
         this.controls.updatePlayButton();
       }
+    });
+    
+    this.youtubePlayer.on('waiting', () => {
+      this.showBuffering();
+    });
+    
+    this.youtubePlayer.on('playing', () => {
+      this.hideBuffering();
     });
     
     this.youtubePlayer.on('error', (errorCode) => {
@@ -1401,8 +1493,19 @@ class OmexaPlayer {
     this.hideError();
     const loading = document.createElement('div');
     loading.className = 'omexa-loading';
-    loading.textContent = 'Loading...';
     loading.id = 'omexa-loading';
+    
+    // Create spinner
+    const spinner = document.createElement('div');
+    spinner.className = 'omexa-loading-spinner';
+    
+    // Create loading text
+    const text = document.createElement('div');
+    text.className = 'omexa-loading-text';
+    text.textContent = 'Loading...';
+    
+    loading.appendChild(spinner);
+    loading.appendChild(text);
     this.container.appendChild(loading);
   }
   
@@ -1410,6 +1513,38 @@ class OmexaPlayer {
     const loading = this.container.querySelector('#omexa-loading');
     if (loading) {
       loading.remove();
+    }
+  }
+  
+  showBuffering() {
+    // Don't show buffering if we're still in initial loading phase
+    if (!this.isReady) return;
+    
+    // Don't show multiple buffering indicators
+    if (this.container.querySelector('#omexa-buffering')) return;
+    
+    const buffering = document.createElement('div');
+    buffering.className = 'omexa-loading';
+    buffering.id = 'omexa-buffering';
+    
+    // Create spinner
+    const spinner = document.createElement('div');
+    spinner.className = 'omexa-loading-spinner';
+    
+    // Create loading text
+    const text = document.createElement('div');
+    text.className = 'omexa-loading-text';
+    text.textContent = 'Loading...';
+    
+    buffering.appendChild(spinner);
+    buffering.appendChild(text);
+    this.container.appendChild(buffering);
+  }
+  
+  hideBuffering() {
+    const buffering = this.container.querySelector('#omexa-buffering');
+    if (buffering) {
+      buffering.remove();
     }
   }
   

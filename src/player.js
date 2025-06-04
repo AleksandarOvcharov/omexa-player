@@ -145,12 +145,13 @@ export class OmexaPlayer {
     if (!this.mediaElement) return;
     
     this.mediaElement.addEventListener('loadstart', () => {
-      this.hideLoading();
+      // Keep loading spinner visible during initial load
     });
     
     this.mediaElement.addEventListener('loadedmetadata', () => {
       this.duration = this.mediaElement.duration;
       this.isReady = true;
+      this.hideLoading();
       this.startTimeUpdates();
     });
     
@@ -185,6 +186,18 @@ export class OmexaPlayer {
         this.controls.updatePlayButton();
       }
     });
+    
+    this.mediaElement.addEventListener('waiting', () => {
+      this.showBuffering();
+    });
+    
+    this.mediaElement.addEventListener('canplay', () => {
+      this.hideBuffering();
+    });
+    
+    this.mediaElement.addEventListener('playing', () => {
+      this.hideBuffering();
+    });
   }
   
   bindYouTubeEvents() {
@@ -212,6 +225,14 @@ export class OmexaPlayer {
       if (this.controls) {
         this.controls.updatePlayButton();
       }
+    });
+    
+    this.youtubePlayer.on('waiting', () => {
+      this.showBuffering();
+    });
+    
+    this.youtubePlayer.on('playing', () => {
+      this.hideBuffering();
     });
     
     this.youtubePlayer.on('error', (errorCode) => {
@@ -274,8 +295,19 @@ export class OmexaPlayer {
     this.hideError();
     const loading = document.createElement('div');
     loading.className = 'omexa-loading';
-    loading.textContent = 'Loading...';
     loading.id = 'omexa-loading';
+    
+    // Create spinner
+    const spinner = document.createElement('div');
+    spinner.className = 'omexa-loading-spinner';
+    
+    // Create loading text
+    const text = document.createElement('div');
+    text.className = 'omexa-loading-text';
+    text.textContent = 'Loading...';
+    
+    loading.appendChild(spinner);
+    loading.appendChild(text);
     this.container.appendChild(loading);
   }
   
@@ -283,6 +315,38 @@ export class OmexaPlayer {
     const loading = this.container.querySelector('#omexa-loading');
     if (loading) {
       loading.remove();
+    }
+  }
+  
+  showBuffering() {
+    // Don't show buffering if we're still in initial loading phase
+    if (!this.isReady) return;
+    
+    // Don't show multiple buffering indicators
+    if (this.container.querySelector('#omexa-buffering')) return;
+    
+    const buffering = document.createElement('div');
+    buffering.className = 'omexa-loading';
+    buffering.id = 'omexa-buffering';
+    
+    // Create spinner
+    const spinner = document.createElement('div');
+    spinner.className = 'omexa-loading-spinner';
+    
+    // Create loading text
+    const text = document.createElement('div');
+    text.className = 'omexa-loading-text';
+    text.textContent = 'Loading...';
+    
+    buffering.appendChild(spinner);
+    buffering.appendChild(text);
+    this.container.appendChild(buffering);
+  }
+  
+  hideBuffering() {
+    const buffering = this.container.querySelector('#omexa-buffering');
+    if (buffering) {
+      buffering.remove();
     }
   }
   

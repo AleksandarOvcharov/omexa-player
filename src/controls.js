@@ -173,9 +173,9 @@ export class Controls {
     document.addEventListener('MSFullscreenChange', this.handleFullscreenChange.bind(this));
     
     // Mouse activity tracking for fullscreen
-            this.player.container.addEventListener('mousemove', this.handleMouseActivity.bind(this));
-        this.player.container.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
-        this.player.container.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
+    this.player.container.addEventListener('mousemove', this.handleMouseActivity.bind(this));
+    this.player.container.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
+    this.player.container.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
   }
   
   handleProgressMouseDown(e) {
@@ -408,17 +408,19 @@ export class Controls {
   }
   
   handleFullscreenChange() {
-    const isFullscreen = !!(
+    const fullscreenElement = 
       document.fullscreenElement ||
       document.webkitFullscreenElement ||
       document.mozFullScreenElement ||
-      document.msFullscreenElement
-    );
+      document.msFullscreenElement;
     
-    this.isFullscreen = isFullscreen;
+    // Check if THIS specific player's container is the one in fullscreen
+    const isThisPlayerFullscreen = fullscreenElement === this.player.container;
+    
+    this.isFullscreen = isThisPlayerFullscreen;
     this.updateFullscreenUI();
     
-    if (isFullscreen) {
+    if (isThisPlayerFullscreen) {
       this.player.container.classList.add('fullscreen');
     } else {
       this.player.container.classList.remove('fullscreen');
@@ -446,6 +448,9 @@ export class Controls {
   }
   
   handleMouseEnter() {
+    // Reset hover state for all other players first
+    this.clearOtherPlayersHoverState();
+    
     this.isHovering = true;
     this.handleMouseActivity();
   }
@@ -459,6 +464,21 @@ export class Controls {
       }, 1000);
     }
   }
+  
+  clearOtherPlayersHoverState() {
+    // Find all other Omexa players on the page and reset their hover state
+    const allPlayers = document.querySelectorAll('.omexa-player');
+    allPlayers.forEach(playerContainer => {
+      if (playerContainer !== this.player.container && playerContainer.omexaPlayer) {
+        const otherControls = playerContainer.omexaPlayer.controls;
+        if (otherControls && otherControls !== this) {
+          otherControls.isHovering = false;
+        }
+      }
+    });
+  }
+  
+
   
   updateTime() {
     const currentTime = this.player.getCurrentTime();
@@ -533,6 +553,7 @@ export class Controls {
     document.removeEventListener('mozfullscreenchange', this.handleFullscreenChange.bind(this));
     document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange.bind(this));
     
+    // Clean up timers
     clearTimeout(this.inactivityTimer);
   }
 } 

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Multiple Players Test - Fullscreen Control Isolation</title>
+   <style>
+     body {
+       margin: 0;
+       padding: 20px;
+       background: #1a1a1a;
+       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+       color: white;
+     }
+     
+     .container {
+       max-width: 1400px;
+       margin: 0 auto;
+     }
+     
+     .header {
+       background: #2a2a2a;
+       padding: 25px;
+       border-radius: 12px;
+       margin-bottom: 25px;
+       text-align: center;
+     }
+     
+     .header h1 {
+       margin: 0 0 15px 0;
+       color: #ff6b6b;
+       font-size: 28px;
+     }
+     
+     .header p {
+       margin: 0;
+       color: #ccc;
+       font-size: 16px;
+       line-height: 1.6;
+     }
+     
+     .players-grid {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+       gap: 30px;
+       margin-bottom: 30px;
+     }
+     
+     .player-section {
+       background: #2a2a2a;
+       padding: 25px;
+       border-radius: 12px;
+       border: 2px solid #333;
+       transition: border-color 0.3s ease;
+     }
+     
+     .player-section:hover {
+       border-color: #ff6b6b;
+     }
+     
+     .player-section h2 {
+       margin-top: 0;
+       color: #fff;
+       font-size: 20px;
+       text-align: center;
+     }
+     
+     .player-info {
+       background: #333;
+       padding: 15px;
+       border-radius: 8px;
+       margin-bottom: 20px;
+     }
+     
+     .player-info p {
+       margin: 8px 0;
+       color: #ccc;
+       font-size: 14px;
+     }
+     
+     .test-instructions {
+       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+       padding: 25px;
+       border-radius: 12px;
+       margin-bottom: 25px;
+     }
+     
+     .test-instructions h2 {
+       margin-top: 0;
+       color: white;
+       font-size: 22px;
+     }
+     
+     .test-steps {
+       list-style: none;
+       padding: 0;
+       margin: 15px 0;
+     }
+     
+     .test-steps li {
+       padding: 10px 0;
+       border-left: 3px solid #fff;
+       padding-left: 15px;
+       margin: 10px 0;
+       background: rgba(255, 255, 255, 0.1);
+       border-radius: 0 6px 6px 0;
+     }
+     
+     .hotkeys {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+       gap: 10px;
+       margin-top: 15px;
+     }
+     
+     .hotkey {
+       display: flex;
+       align-items: center;
+       gap: 10px;
+       background: rgba(255, 255, 255, 0.1);
+       padding: 8px 12px;
+       border-radius: 6px;
+     }
+     
+     .key {
+       background: #fff;
+       color: #333;
+       padding: 4px 8px;
+       border-radius: 4px;
+       font-family: monospace;
+       font-size: 12px;
+       min-width: 25px;
+       text-align: center;
+       font-weight: bold;
+     }
+     
+     .status {
+       background: #1e3a8a;
+       color: white;
+       padding: 15px;
+       border-radius: 8px;
+       margin-top: 20px;
+       text-align: center;
+       font-weight: 500;
+     }
+   </style>
+</head>
+<body>
+   <div class="container">
+     <div class="header">
+       <h1>🎬 Multiple Players Test</h1>
+       <p>Testing fullscreen control isolation - each player should only respond to controls when it's the one in fullscreen mode</p>
+     </div>
+
+     <div class="test-instructions">
+       <h2>🧪 Test Instructions</h2>
+       <ol class="test-steps">
+         <li>🖱️ Hover over any player to enable keyboard controls (you'll see a red border)</li>
+         <li>▶️ Use hotkeys to control the hovered player (Space, K, Arrow keys, etc.)</li>
+         <li>🔍 Press 'F' to enter fullscreen mode on any player</li>
+         <li>⌨️ While in fullscreen, test all keyboard controls - they should ONLY affect the fullscreen player</li>
+         <li>🚪 Press 'Esc' to exit fullscreen and repeat with other players</li>
+         <li>✅ Verify that non-fullscreen players are NOT affected by keyboard controls when another is fullscreen</li>
+       </ol>
+       
+       <div class="hotkeys">
+         <div class="hotkey">
+           <span class="key">Space</span>
+           <span>Play/Pause</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">K</span>
+           <span>Play/Pause</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">←/→</span>
+           <span>Seek ±5s</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">J/L</span>
+           <span>Seek ±10s</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">↑/↓</span>
+           <span>Volume</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">M</span>
+           <span>Mute</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">F</span>
+           <span>Fullscreen</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">0-9</span>
+           <span>Seek %</span>
+         </div>
+       </div>
+     </div>
+
+     <div class="players-grid">
+       <div class="player-section">
+         <h2>🎵 Player 1 - YouTube Music Video</h2>
+         <div class="player-info">
+           <p><strong>Video:</strong> Elon Musk Interview</p>
+           <p><strong>Type:</strong> YouTube</p>
+           <p><strong>Test:</strong> Fullscreen keyboard controls</p>
+         </div>
+         
+         <div id="player1"
+              data-type="youtube"
+              data-src="https://www.youtube.com/watch?v=M7lc1UVf-VE"
+              data-autoplay="false">
+         </div>
+       </div>
+
+       <div class="player-section">
+         <h2>🎬 Player 2 - Sample Video</h2>
+         <div class="player-info">
+           <p><strong>Video:</strong> Sample MP4 File</p>
+           <p><strong>Type:</strong> Regular Video</p>
+           <p><strong>Test:</strong> Independent control isolation</p>
+         </div>
+         
+         <div id="player2"
+              data-type="video"
+              data-src="https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4"
+              data-autoplay="false">
+         </div>
+       </div>
+
+       <div class="player-section">
+         <h2>🎥 Player 3 - Another YouTube Video</h2>
+         <div class="player-info">
+           <p><strong>Video:</strong> Different YouTube Video</p>
+           <p><strong>Type:</strong> YouTube</p>
+           <p><strong>Test:</strong> Multiple YouTube players isolation</p>
+         </div>
+         
+         <div id="player3"
+              data-type="youtube"
+              data-src="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+              data-autoplay="false">
+         </div>
+       </div>
+
+       <div class="player-section">
+         <h2>🌐 Player 4 - Another Sample Video</h2>
+         <div class="player-info">
+           <p><strong>Video:</strong> Big Buck Bunny</p>
+           <p><strong>Type:</strong> Regular Video</p>
+           <p><strong>Test:</strong> Multiple regular players isolation</p>
+         </div>
+         
+         <div id="player4"
+              data-type="video"
+              data-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              data-autoplay="false">
+         </div>
+       </div>
+     </div>
+
+     <div class="status">
+       🎯 <strong>Expected Behavior:</strong> Only the fullscreen player should respond to keyboard controls. Hovering over non-fullscreen players should still work independently.
+     </div>
+   </div>
+
+   <script src="dist/omexa-player.min.js"></script>
+</body>
+</html> 

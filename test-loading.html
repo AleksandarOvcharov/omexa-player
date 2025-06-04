@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Omexa Player - Loading Animation Test</title>
+   <style>
+     body {
+       margin: 0;
+       padding: 20px;
+       background: #1a1a1a;
+       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+       color: white;
+     }
+     
+     .container {
+       max-width: 1200px;
+       margin: 0 auto;
+     }
+     
+     .section {
+       background: #2a2a2a;
+       padding: 25px;
+       border-radius: 12px;
+       margin-bottom: 25px;
+       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+     }
+     
+     .section h2 {
+       margin-top: 0;
+       color: #ff6b6b;
+       font-size: 24px;
+     }
+     
+     .section p {
+       margin: 15px 0;
+       color: #ccc;
+       line-height: 1.6;
+     }
+     
+     .player-grid {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+       gap: 25px;
+       margin-top: 20px;
+     }
+     
+     .player-item {
+       background: #333;
+       padding: 20px;
+       border-radius: 8px;
+       border: 1px solid #444;
+     }
+     
+     .player-item h3 {
+       margin-top: 0;
+       color: #fff;
+       font-size: 18px;
+     }
+     
+     .features {
+       list-style: none;
+       padding: 0;
+       margin: 20px 0;
+     }
+     
+     .features li {
+       padding: 8px 0;
+       border-left: 3px solid #ff6b6b;
+       padding-left: 15px;
+       margin: 10px 0;
+       background: rgba(255, 107, 107, 0.1);
+     }
+     
+     .note {
+       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+       border-radius: 8px;
+       padding: 20px;
+       margin-top: 20px;
+     }
+     
+     .note strong {
+       color: #fff;
+     }
+     
+     .controls {
+       margin-top: 15px;
+       display: flex;
+       gap: 10px;
+       flex-wrap: wrap;
+     }
+     
+     .btn {
+       background: #ff6b6b;
+       color: white;
+       border: none;
+       padding: 8px 16px;
+       border-radius: 6px;
+       cursor: pointer;
+       font-size: 14px;
+       transition: background 0.2s;
+     }
+     
+     .btn:hover {
+       background: #ff5252;
+     }
+   </style>
+</head>
+<body>
+   <div class="container">
+     <div class="section">
+       <h2>🔄 Loading Animation Test</h2>
+       <p>Test the YouTube-style spinning loading animation in different scenarios. The loading spinner should appear when:</p>
+       
+       <ul class="features">
+         <li>🚀 Initial video loading</li>
+         <li>⏳ Video buffering during playback</li>
+         <li>📡 Network interruptions</li>
+         <li>🎬 Seeking to unloaded parts</li>
+       </ul>
+       
+               <div class="note">
+          <strong>Loading Features:</strong> 48px spinning circle with red accent, smooth fade-in animation, glowing effect, and consistent "Loading..." text for all states.
+        </div>
+     </div>
+
+     <div class="player-grid">
+       <div class="player-item">
+         <h3>📺 YouTube Video</h3>
+         <p>Watch the loading animation when the YouTube video initializes and buffers.</p>
+         
+         <div id="youtube-player"
+              data-type="youtube"
+              data-src="https://www.youtube.com/watch?v=M7lc1UVf-VE"
+              data-autoplay="false">
+         </div>
+         
+         <div class="controls">
+           <button class="btn" onclick="refreshPlayer('youtube-player')">🔄 Refresh Player</button>
+           <button class="btn" onclick="simulateBuffering('youtube-player')">⏳ Simulate Buffering</button>
+         </div>
+       </div>
+
+       <div class="player-item">
+         <h3>🎥 Regular Video</h3>
+         <p>Test loading animation with a regular MP4 video file.</p>
+         
+         <div id="video-player"
+              data-type="video"
+              data-src="https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4"
+              data-autoplay="false">
+         </div>
+         
+         <div class="controls">
+           <button class="btn" onclick="refreshPlayer('video-player')">🔄 Refresh Player</button>
+           <button class="btn" onclick="simulateNetworkIssue('video-player')">📡 Simulate Network Issue</button>
+         </div>
+       </div>
+     </div>
+
+     <div class="section">
+       <h2>🎨 Animation Details</h2>
+       <p>The loading animation includes these enhancements:</p>
+       
+       <ul class="features">
+         <li>🎯 48px diameter spinner (YouTube-like size)</li>
+         <li>🌈 Red accent color matching player theme</li>
+         <li>✨ Glowing drop-shadow effect</li>
+         <li>📱 Smooth 0.8s rotation speed</li>
+         <li>🎭 Fade-in with scale animation</li>
+         <li>💬 Consistent "Loading..." text</li>
+         <li>🎪 Prevents multiple spinners</li>
+       </ul>
+     </div>
+   </div>
+
+   <script src="dist/omexa-player.min.js"></script>
+   <script>
+     function refreshPlayer(playerId) {
+       const container = document.getElementById(playerId);
+       if (container.omexaPlayer) {
+         container.omexaPlayer.destroy();
+       }
+       
+       // Small delay to show loading animation
+       setTimeout(() => {
+         container.omexaPlayer = new OmexaPlayer(container);
+       }, 100);
+     }
+     
+            function simulateBuffering(playerId) {
+         const container = document.getElementById(playerId);
+         if (container.omexaPlayer) {
+           // Manually trigger buffering for demo (shows "Loading...")
+           container.omexaPlayer.showBuffering();
+           setTimeout(() => {
+             container.omexaPlayer.hideBuffering();
+           }, 3000);
+         }
+       }
+     
+     function simulateNetworkIssue(playerId) {
+       const container = document.getElementById(playerId);
+       if (container.omexaPlayer) {
+         // Show loading for longer period
+         container.omexaPlayer.showLoading();
+         setTimeout(() => {
+           container.omexaPlayer.hideLoading();
+         }, 4000);
+       }
+     }
+   </script>
+</body>
+</html> 

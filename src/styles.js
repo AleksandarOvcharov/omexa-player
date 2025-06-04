@@ -44,7 +44,14 @@ export const STYLES = `
   left: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }
+
+.omexa-player-youtube:hover iframe {
+  pointer-events: auto;
+}
+
+
 
 .omexa-controls {
   position: absolute;
@@ -173,8 +180,51 @@ export const STYLES = `
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  z-index: 10;
+  opacity: 0;
+  animation: omexa-fade-in 0.3s ease-out forwards;
+}
+
+.omexa-loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top: 4px solid #ff6b6b;
+  border-radius: 50%;
+  animation: omexa-spin 0.8s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.3));
+}
+
+.omexa-loading-text {
   color: white;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.5px;
+}
+
+@keyframes omexa-spin {
+  0% { 
+    transform: rotate(0deg); 
+  }
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+
+@keyframes omexa-fade-in {
+  0% { 
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  100% { 
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .omexa-error {

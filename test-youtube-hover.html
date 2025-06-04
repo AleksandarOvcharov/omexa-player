@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>YouTube Hover Controls Test</title>
+   <style>
+     body {
+       margin: 0;
+       padding: 20px;
+       background: #1a1a1a;
+       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+       color: white;
+     }
+     
+     .container {
+       max-width: 1200px;
+       margin: 0 auto;
+     }
+     
+     .header {
+       background: #2a2a2a;
+       padding: 25px;
+       border-radius: 12px;
+       margin-bottom: 25px;
+       text-align: center;
+     }
+     
+     .header h1 {
+       margin: 0 0 15px 0;
+       color: #ff6b6b;
+       font-size: 28px;
+     }
+     
+     .comparison {
+       display: grid;
+       grid-template-columns: 1fr 1fr;
+       gap: 30px;
+       margin-bottom: 30px;
+     }
+     
+     .player-section {
+       background: #2a2a2a;
+       padding: 25px;
+       border-radius: 12px;
+       border: 2px solid #333;
+     }
+     
+     .player-section h2 {
+       margin-top: 0;
+       color: #fff;
+       text-align: center;
+       font-size: 20px;
+     }
+     
+     .status-indicator {
+       background: #333;
+       padding: 15px;
+       border-radius: 8px;
+       margin-bottom: 20px;
+       text-align: center;
+       font-weight: bold;
+     }
+     
+     .status-indicator.active {
+       background: #065f46;
+       color: #10b981;
+     }
+     
+     .instructions {
+       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+       padding: 25px;
+       border-radius: 12px;
+       margin-bottom: 25px;
+     }
+     
+     .test-steps {
+       list-style: none;
+       padding: 0;
+     }
+     
+     .test-steps li {
+       padding: 10px 15px;
+       margin: 10px 0;
+       background: rgba(255, 255, 255, 0.1);
+       border-radius: 6px;
+       border-left: 3px solid #fff;
+     }
+     
+     .hotkeys {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+       gap: 10px;
+       margin-top: 15px;
+       background: rgba(0, 0, 0, 0.3);
+       padding: 15px;
+       border-radius: 8px;
+     }
+     
+     .hotkey {
+       display: flex;
+       align-items: center;
+       gap: 8px;
+       padding: 5px 8px;
+       background: rgba(255, 255, 255, 0.1);
+       border-radius: 4px;
+       font-size: 13px;
+     }
+     
+     .key {
+       background: #fff;
+       color: #333;
+       padding: 2px 6px;
+       border-radius: 3px;
+       font-family: monospace;
+       font-size: 11px;
+       font-weight: bold;
+       min-width: 20px;
+       text-align: center;
+     }
+   </style>
+</head>
+<body>
+   <div class="container">
+     <div class="header">
+       <h1>🎬 YouTube Hover Controls Test</h1>
+       <p>Testing that hover controls work properly on YouTube players vs regular video players</p>
+     </div>
+
+     <div class="instructions">
+       <h2>🧪 Test Instructions</h2>
+       <ol class="test-steps">
+         <li>🖱️ Hover over each player - you should see a red border appear</li>
+         <li>⌨️ Try keyboard shortcuts while hovering - they should work on both players</li>
+         <li>🔄 Move mouse between players to test hover state changes</li>
+         <li>🎯 Both YouTube and regular players should respond identically to hover</li>
+         <li>✅ Verify the status indicators below show when players are hovered</li>
+       </ol>
+       
+       <div class="hotkeys">
+         <div class="hotkey">
+           <span class="key">Space</span>
+           <span>Play/Pause</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">K</span>
+           <span>Play/Pause</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">←/→</span>
+           <span>Seek ±5s</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">J/L</span>
+           <span>Seek ±10s</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">↑/↓</span>
+           <span>Volume</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">M</span>
+           <span>Mute</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">F</span>
+           <span>Fullscreen</span>
+         </div>
+         <div class="hotkey">
+           <span class="key">0-9</span>
+           <span>Seek %</span>
+         </div>
+       </div>
+     </div>
+
+     <div class="comparison">
+       <div class="player-section">
+         <h2>📺 YouTube Player</h2>
+         <div class="status-indicator" id="youtube-status">
+           Hover Status: Not Hovering
+         </div>
+         
+         <div id="youtube-player"
+              data-type="youtube"
+              data-src="https://www.youtube.com/watch?v=M7lc1UVf-VE"
+              data-autoplay="false">
+         </div>
+       </div>
+
+       <div class="player-section">
+         <h2>🎥 Regular Video Player</h2>
+         <div class="status-indicator" id="video-status">
+           Hover Status: Not Hovering
+         </div>
+         
+         <div id="video-player"
+              data-type="video"
+              data-src="https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4"
+              data-autoplay="false">
+         </div>
+       </div>
+     </div>
+
+     <div class="instructions">
+       <h2>✅ Expected Results</h2>
+       <ul class="test-steps">
+         <li>Both players should show red border when hovering</li>
+         <li>Both players should respond to keyboard shortcuts when hovered</li>
+         <li>Status indicators should update correctly when hovering</li>
+         <li>Moving between players should transfer hover state properly</li>
+         <li>YouTube player hover should work as reliably as regular video player</li>
+       </ul>
+     </div>
+   </div>
+
+   <script src="dist/omexa-player.min.js"></script>
+   <script>
+     // Monitor hover states for testing
+     const youtubePlayer = document.getElementById('youtube-player');
+     const videoPlayer = document.getElementById('video-player');
+     const youtubeStatus = document.getElementById('youtube-status');
+     const videoStatus = document.getElementById('video-status');
+     
+     function updateStatus(element, statusElement, isHovering) {
+       if (isHovering) {
+         statusElement.textContent = 'Hover Status: HOVERING (Keyboard Active)';
+         statusElement.classList.add('active');
+       } else {
+         statusElement.textContent = 'Hover Status: Not Hovering';
+         statusElement.classList.remove('active');
+       }
+     }
+     
+     // YouTube player hover monitoring
+     youtubePlayer.addEventListener('mouseenter', () => {
+       updateStatus(youtubePlayer, youtubeStatus, true);
+     });
+     youtubePlayer.addEventListener('mouseleave', () => {
+       updateStatus(youtubePlayer, youtubeStatus, false);
+     });
+     
+     // Regular video player hover monitoring
+     videoPlayer.addEventListener('mouseenter', () => {
+       updateStatus(videoPlayer, videoStatus, true);
+     });
+     videoPlayer.addEventListener('mouseleave', () => {
+       updateStatus(videoPlayer, videoStatus, false);
+     });
+   </script>
+</body>
+</html> 
