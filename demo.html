@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omexa Player Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin-bottom: 60px;
+        }
+        
+        .demo-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .demo-section h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 3px solid #ff6b6b;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .player-container {
+            margin: 30px 0;
+            max-width: 800px;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b6b;
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .controls-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .controls-info h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        
+        .controls-info ul {
+            margin-bottom: 0;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .demo-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Omexa Player</h1>
+        <p class="subtitle">Modern, responsive video player for the web</p>
+        
+        <!-- Regular Video Demo -->
+        <div class="demo-section">
+            <h2>🎥 Regular Video Player</h2>
+            <p>Supports standard video formats (MP4, WebM, OGV) with custom controls and fullscreen support.</p>
+            
+            <div class="player-container">
+                <div id="player-container-1"
+                     data-type="video"
+                     data-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
+                </div>
+            </div>
+            
+            <div class="code-block">
+&lt;div id="player-container"
+     data-type="video"
+     data-src="https://example.com/video.mp4"&gt;
+&lt;/div&gt;
+
+&lt;script src="https://cdn-url.com/omexa-player.js"&gt;&lt;/script&gt;
+            </div>
+        </div>
+        
+        <!-- YouTube Video Demo -->
+        <div class="demo-section">
+            <h2>📺 YouTube Video Player</h2>
+            <p>Seamlessly integrates with YouTube videos using their API while maintaining consistent controls.</p>
+            
+            <div class="player-container">
+                <div id="player-container-2"
+                     data-type="youtube"
+                     data-src="https://www.youtube.com/watch?v=M7lc1UVf-VE"
+                     data-autoplay="false">
+                </div>
+            </div>
+            
+            <p><strong>Alternative test videos:</strong></p>
+            <ul>
+                <li><code>M7lc1UVf-VE</code> - Educational video (default)</li>
+                <li><code>jNQXAC9IVRw</code> - "Me at the zoo" (first YouTube video)</li>
+                <li><code>9bZkp7q19f0</code> - PSY - Gangnam Style</li>
+            </ul>
+            <p><em>Note: If a video doesn't load, it might be due to embedding restrictions or regional availability.</em></p>
+            
+            <div class="code-block">
+&lt;div id="player-container"
+     data-type="youtube"
+     data-src="https://www.youtube.com/watch?v=VIDEO_ID"
+     data-autoplay="false"&gt;
+&lt;/div&gt;
+
+&lt;script src="https://cdn-url.com/omexa-player.js"&gt;&lt;/script&gt;
+            </div>
+        </div>
+        
+        <!-- Features Section -->
+        <div class="demo-section">
+            <h2>✨ Features</h2>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <h3>🎮 Modern Controls</h3>
+                    <p>Clean, intuitive interface with custom SVG icons for play, pause, seek, and volume controls.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📱 Responsive Design</h3>
+                    <p>Adapts to different screen sizes and devices with mobile-optimized touch controls.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🖥️ Fullscreen Support</h3>
+                    <p>True fullscreen experience with auto-hiding controls and keyboard navigation.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>⚡ Lightweight</h3>
+                    <p>Single JavaScript file under 30KB with no external dependencies (except YouTube API when needed).</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🎯 Easy Integration</h3>
+                    <p>Just add data attributes to any div and include the script - automatic initialization.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>⌨️ Keyboard Shortcuts</h3>
+                    <p>Full keyboard support for power users and accessibility.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🏷️ Subtle Branding</h3>
+                    <p>Unobtrusive "Powered by Omexa Player" text appears below each player instance.</p>
+                </div>
+            </div>
+            
+            <div class="controls-info">
+                <h3>🎹 Keyboard Shortcuts</h3>
+                <ul>
+                    <li><strong>Space</strong> - Play/Pause</li>
+                    <li><strong>←/→</strong> - Seek backward/forward (5 seconds)</li>
+                    <li><strong>↑/↓</strong> - Volume up/down</li>
+                    <li><strong>M</strong> - Mute/Unmute</li>
+                    <li><strong>F</strong> - Toggle fullscreen</li>
+                    <li><strong>Esc</strong> - Exit fullscreen</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Troubleshooting Section -->
+        <div class="demo-section">
+            <h2>🔧 Troubleshooting YouTube Issues</h2>
+            <p>If YouTube videos aren't loading, here are the most common causes and solutions:</p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <h3>❌ "Video embedding disabled by owner"</h3>
+                    <p>The video owner has disabled embedding. Try a different video or contact the video owner.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🌍 "Video not found or private"</h3>
+                    <p>Video might be private, deleted, or region-restricted. Use a publicly available video.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📱 "Cannot be played in HTML5 player"</h3>
+                    <p>Video format issue. Try a different video or check if the browser supports HTML5.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔗 Invalid Video ID</h3>
+                    <p>Check the YouTube URL format. Should be: <code>youtube.com/watch?v=VIDEO_ID</code></p>
+                </div>
+            </div>
+            
+            <div class="controls-info">
+                <h3>✅ Recommended Test Videos</h3>
+                <ul>
+                    <li><strong>M7lc1UVf-VE</strong> - Educational content (usually embedding-friendly)</li>
+                    <li><strong>jNQXAC9IVRw</strong> - Historic "Me at the zoo" video</li>
+                    <li><strong>9bZkp7q19f0</strong> - Popular music videos (may have restrictions)</li>
+                </ul>
+                <p><em>Always test with videos that allow embedding and are publicly available.</em></p>
+            </div>
+        </div>
+
+        <!-- JavaScript API Demo -->
+        <div class="demo-section">
+            <h2>🔧 JavaScript API</h2>
+            <p>Control players programmatically with a simple, consistent API:</p>
+            
+            <div class="code-block">
+// Manual initialization
+const player = new OmexaPlayer('#my-container', {
+    src: 'https://example.com/video.mp4',
+    autoplay: false,
+    volume: 0.8
+});
+
+// Control methods
+player.play();
+player.pause();
+player.seek(120); // Seek to 2 minutes
+player.setVolume(0.5);
+player.mute();
+
+// Get player state
+const currentTime = player.getCurrentTime();
+const duration = player.getDuration();
+const isPaused = player.isPaused();
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load the Omexa Player -->
+    <script src="./dist/omexa-player.js"></script>
+    
+    <script>
+        // Demo: Programmatic control example
+        setTimeout(() => {
+            console.log('Omexa Player loaded and ready!');
+            console.log('Players found:', document.querySelectorAll('.omexa-player').length);
+        }, 1000);
+    </script>
+</body>
+</html> 

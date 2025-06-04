@@ -1,0 +1,18 @@
+Variant 1 (if not yt video)
+
+<div id="player-container"
+     data-type="video"
+     data-src="https://example.com/video.mp4"
+</div>
+==========================
+
+Variant 2 (yt video)
+
+<div id="player-container"
+     data-type="youtube"
+     data-src="https://example.com/video.mp4"
+     data-autoplay="false"
+</div>
+
+
+<script src="https://cdn-url.com/player.js"></script>
