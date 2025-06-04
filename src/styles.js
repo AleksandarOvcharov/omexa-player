@@ -8,6 +8,11 @@ export const STYLES = `
     overflow: hidden;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     line-height: 1;
+    transition: box-shadow 0.3s ease;
+}
+
+.omexa-player:hover {
+    box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.5);
 }
 
     .omexa-player-wrapper {

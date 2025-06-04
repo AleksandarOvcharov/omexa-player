@@ -16,10 +16,11 @@ export class Controls {
     this.rewindButton = null;
     this.fastForwardButton = null;
     
-    this.isDragging = false;
-    this.lastVolume = 1;
-    this.isFullscreen = false;
-    this.inactivityTimer = null;
+            this.isDragging = false;
+        this.lastVolume = 1;
+        this.isFullscreen = false;
+        this.inactivityTimer = null;
+        this.isHovering = false;
     
     this.createControls();
     this.bindEvents();
@@ -172,9 +173,9 @@ export class Controls {
     document.addEventListener('MSFullscreenChange', this.handleFullscreenChange.bind(this));
     
     // Mouse activity tracking for fullscreen
-    this.player.container.addEventListener('mousemove', this.handleMouseActivity.bind(this));
-    this.player.container.addEventListener('mouseenter', this.handleMouseActivity.bind(this));
-    this.player.container.addEventListener('mouseleave', this.handleMouseInactivity.bind(this));
+            this.player.container.addEventListener('mousemove', this.handleMouseActivity.bind(this));
+        this.player.container.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
+        this.player.container.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
   }
   
   handleProgressMouseDown(e) {
@@ -222,53 +223,138 @@ export class Controls {
   }
   
   handleKeydown(e) {
-    if (!this.player.container.contains(document.activeElement) && !this.isFullscreen) {
+    // Handle keyboard events if hovering over player or in fullscreen
+    if (!this.isHovering && !this.isFullscreen) {
       return;
     }
     
-    switch (e.code) {
-      case 'Space':
-        e.preventDefault();
-        if (this.player.isPaused()) {
-          this.player.play();
-        } else {
-          this.player.pause();
-        }
-        break;
-      case 'ArrowLeft':
-        e.preventDefault();
-        const currentTime = this.player.getCurrentTime();
-        this.player.seek(Math.max(0, currentTime - 5));
-        break;
-      case 'ArrowRight':
-        e.preventDefault();
-        const currentTime2 = this.player.getCurrentTime();
-        const duration = this.player.getDuration();
-        this.player.seek(Math.min(duration, currentTime2 + 5));
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        const volume = Math.min(1, this.player.getVolume() + 0.1);
-        this.player.setVolume(volume);
-        this.player.unmute();
-        break;
-      case 'ArrowDown':
-        e.preventDefault();
-        const volume2 = Math.max(0, this.player.getVolume() - 0.1);
-        this.player.setVolume(volume2);
-        break;
+            switch (e.code) {
+            case 'Space':
+                e.preventDefault();
+                if (this.player.isPaused()) {
+                    this.player.play();
+                } else {
+                    this.player.pause();
+                }
+                // Show controls in fullscreen when pausing/playing
+                if (this.isFullscreen) {
+                    this.player.container.classList.remove('inactive');
+                    this.handleMouseActivity();
+                }
+                break;
+            case 'Digit0':
+            case 'Digit1':
+            case 'Digit2':
+            case 'Digit3':
+            case 'Digit4':
+            case 'Digit5':
+            case 'Digit6':
+            case 'Digit7':
+            case 'Digit8':
+            case 'Digit9':
+                e.preventDefault();
+                const digit = parseInt(e.code.replace('Digit', ''));
+                const seekTime = (digit / 10) * this.player.getDuration();
+                this.player.seek(seekTime);
+                // Show controls in fullscreen when seeking
+                if (this.isFullscreen) {
+                    this.player.container.classList.remove('inactive');
+                    this.handleMouseActivity();
+                }
+                break;
+                  case 'ArrowLeft':
+                e.preventDefault();
+                const currentTime = this.player.getCurrentTime();
+                this.player.seek(Math.max(0, currentTime - 5));
+                // Show controls in fullscreen when seeking
+                if (this.isFullscreen) {
+                    this.player.container.classList.remove('inactive');
+                    this.handleMouseActivity();
+                }
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                const currentTime2 = this.player.getCurrentTime();
+                const duration = this.player.getDuration();
+                this.player.seek(Math.min(duration, currentTime2 + 5));
+                // Show controls in fullscreen when seeking
+                if (this.isFullscreen) {
+                    this.player.container.classList.remove('inactive');
+                    this.handleMouseActivity();
+                }
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                const volume = Math.min(1, this.player.getVolume() + 0.1);
+                this.player.setVolume(volume);
+                this.player.unmute();
+                // Show controls in fullscreen when adjusting volume
+                if (this.isFullscreen) {
+                    this.player.container.classList.remove('inactive');
+                    this.handleMouseActivity();
+                }
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                const volume2 = Math.max(0, this.player.getVolume() - 0.1);
+                this.player.setVolume(volume2);
+                // Show controls in fullscreen when adjusting volume
+                if (this.isFullscreen) {
+                    this.player.container.classList.remove('inactive');
+                    this.handleMouseActivity();
+                }
+                break;
+            case 'KeyJ':
+                e.preventDefault();
+                const currentTimeJ = this.player.getCurrentTime();
+                this.player.seek(Math.max(0, currentTimeJ - 10));
+                // Show controls in fullscreen when seeking
+                if (this.isFullscreen) {
+                    this.player.container.classList.remove('inactive');
+                    this.handleMouseActivity();
+                }
+                break;
+            case 'KeyK':
+                e.preventDefault();
+                if (this.player.isPaused()) {
+                    this.player.play();
+                } else {
+                    this.player.pause();
+                }
+                // Show controls in fullscreen when pausing/playing
+                if (this.isFullscreen) {
+                    this.player.container.classList.remove('inactive');
+                    this.handleMouseActivity();
+                }
+                break;
+            case 'KeyL':
+                e.preventDefault();
+                const currentTimeL = this.player.getCurrentTime();
+                const durationL = this.player.getDuration();
+                this.player.seek(Math.min(durationL, currentTimeL + 10));
+                // Show controls in fullscreen when seeking
+                if (this.isFullscreen) {
+                    this.player.container.classList.remove('inactive');
+                    this.handleMouseActivity();
+                }
+                break;
       case 'KeyF':
         e.preventDefault();
         this.toggleFullscreen();
         break;
-      case 'KeyM':
-        e.preventDefault();
-        if (this.player.isMuted()) {
-          this.player.unmute();
-        } else {
-          this.player.mute();
-        }
-        break;
+                  case 'KeyM':
+                e.preventDefault();
+                if (this.player.isMuted()) {
+                    this.player.unmute();
+                } else {
+                    this.player.mute();
+                }
+                // Show controls in fullscreen when muting/unmuting
+                if (this.isFullscreen) {
+                    this.player.container.classList.remove('inactive');
+                    this.handleMouseActivity();
+                }
+                break;
       case 'Escape':
         if (this.isFullscreen) {
           this.exitFullscreen();
@@ -359,7 +445,13 @@ export class Controls {
     }
   }
   
-  handleMouseInactivity() {
+  handleMouseEnter() {
+    this.isHovering = true;
+    this.handleMouseActivity();
+  }
+  
+  handleMouseLeave() {
+    this.isHovering = false;
     if (this.isFullscreen) {
       clearTimeout(this.inactivityTimer);
       this.inactivityTimer = setTimeout(() => {
