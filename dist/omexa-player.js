@@ -1,7 +1,7 @@
 /*!
  * Omexa Player v1.0.0
  * Modern video player for web
- * https://github.com/your-username/omexa-player
+ * https://github.com/AleksandarOvcharov/omexa-player
  * 
  * Copyright (c) 2024
  * Released under the MIT License
@@ -1472,7 +1472,7 @@ class OmexaPlayer {
     // Add subtle branding
     const branding = document.createElement('div');
     branding.className = 'omexa-branding';
-    branding.innerHTML = 'Powered by <a href="https://github.com/your-username/omexa-player" target="_blank">Omexa Player</a>';
+    branding.innerHTML = 'Powered by <a href="https://github.com/AleksandarOvcharov/omexa-player" target="_blank">Omexa Player</a>';
     this.wrapper.appendChild(branding);
   }
   
